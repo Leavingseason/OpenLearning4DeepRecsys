@@ -227,25 +227,7 @@ def build_model(user_cf_feature, user_attr_feature, user_attr_rank,
 
 	return train_step, square_error, loss, merged_summary
 
-r'''
-def run():
-		
-	user_attr_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\tag_user.txt'
-	item_attr_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\tag_item.txt'
-	rating_train_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\train-valid-test\rating_train.tsv'
-	rating_valid_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\train-valid-test\rating_valid.tsv'
-	
-	user_cnt, item_cnt, user_attr_cnt, item_attr_cnt = 7652,12856,5007,5005
-	user_attr_rank, item_attr_rank = 16,16
-	
-	dataset = data_reader.sparse_data_repos(user_cnt, item_cnt, user_attr_cnt, item_attr_cnt) #5,4,6,3
-	dataset.load_user_attributes(user_attr_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\user_attr.tsv'
-	dataset.load_item_attributes(item_attr_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\item_attr.tsv'
-	dataset.load_trainging_ratings(rating_train_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\train.tsv'
-	dataset.load_test_ratings(rating_valid_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\test.tsv'
-	
-	pass
-'''
+
 
 def compose_vector_for_sparse_tensor(entity2attr_list):
 	indices = [] 
@@ -272,6 +254,6 @@ def compose_vector_for_sparse_tensor(entity2attr_list):
 
 if __name__ == '__main__':
 	
-	grid_search(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens10M\movielens_100k.pkl',
-			r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens10M\logs\CCFNet_movielens10m.csv')
+	grid_search(r'data/movielens_100k.pkl',
+			r'logs/CCFNet_movielens10m.csv')
 	pass 
