@@ -38,16 +38,13 @@ def build_model(user_indices, item_indices, rank, ratings, user_cnt, item_cnt, l
 
 	return train_step, square_error, loss, merged_summary
 
-def grid_search_movielens():
-	
-	#dataset = data_reader.movie_lens_data_repos(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens10M\movielens_100k.pkl')
-	#log_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens10M\logs\BMF_movielens10m.csv'
-	
+def grid_search_params():
+
 	dataset = data_reader.sparse_data_repos(10000,10005)
-	dataset.load_trainging_ratings(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\Douban\compress\userbook_unique_compactid_train.txt')
-	dataset.load_test_ratings(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\Douban\compress\userbook_unique_compactid_valid.txt')
-	dataset.load_eval_ratings(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\Douban\compress\userbook_unique_compactid_test.txt')
-	log_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\Douban\logs\BMF_book.csv'
+	dataset.load_trainging_ratings(r'data/userbook_unique_compactid_train.txt')
+	dataset.load_test_ratings(r'data/userbook_unique_compactid_valid.txt')
+	dataset.load_eval_ratings(r'data/userbook_unique_compactid_test.txt')
+	log_file = r'logs/BMF_book.csv'
 	
 	wt = open(log_file,'w')
 	rank = 16
@@ -74,28 +71,7 @@ def run_with_parameter(dataset,rank,lr,lamb,mu,n_eopch,batch_size,wt, init_value
 	wt.write('%d,%f,%f,%f,%d,%d,%f,%f,%f,%d,%f,%f\n' %(rank,lr,lamb,mu,n_eopch,batch_size,best_train_rmse, best_test_rmse, best_eval_rmse,best_eopch_idx,init_value,(end-start)/60))
 	wt.flush()
 
-def run():
-	
-	is_eval_on = True
 
-	rating_train_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\train-valid-test\rating_train.tsv'
-	rating_valid_file = r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\MovieLens\compressID\train-valid-test\rating_valid.tsv'
-	
-	user_cnt, item_cnt = 7652,12856
-	rank = 16
-	lamb=0.001
-	batch_size = 100
-	n_eopch = 100
-	lr=0.1
-	mu=3.694
-	
-	dataset = data_reader.sparse_data_repos(user_cnt, item_cnt)
-	dataset.load_trainging_ratings(rating_train_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\train.tsv'
-	dataset.load_test_ratings(rating_valid_file) #r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\fake\test.tsv'
-	
-	
-	best_train_rmse, best_test_rmse, best_eval_rmse = single_run(dataset,rank,user_cnt,item_cnt,lr,lamb,mu,n_eopch,batch_size,is_eval_on)
-	
 
 
 def single_run(dataset,rank,user_cnt,item_cnt,lr,lamb,mu,n_eopch,batch_size,is_eval_on, init_value):
@@ -113,7 +89,7 @@ def single_run(dataset,rank,user_cnt,item_cnt,lr,lamb,mu,n_eopch,batch_size,is_e
 	
 	#print(sess.run(user_embeddings))
 	
-	train_writer = tf.summary.FileWriter(r'\\mlsdata\e$\Users\v-lianji\DeepRecsys\Test\logs', sess.graph)
+	train_writer = tf.summary.FileWriter(r'logs', sess.graph)
 	
 	n_instances = len(dataset.training_ratings_user)
 
@@ -157,6 +133,6 @@ def single_run(dataset,rank,user_cnt,item_cnt,lr,lamb,mu,n_eopch,batch_size,is_e
 
 if __name__ == '__main__':
 	
-	grid_search_movielens()
+	grid_search_params()
 	#run()
 	pass 
