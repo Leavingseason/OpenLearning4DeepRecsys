@@ -10,8 +10,9 @@ https://arxiv.org/abs/1703.04247 DeepFM: A Factorization-Machine based Neural Ne
 2. FM only: 0.684   
 3. DNN only: 0.670  
 4. DeepFM: 0.692 .
-Notice:  (1) Input format is the same as svmlight, feature index starts with 1. 
-         (2) You have to provide the "field number" (a.k.a field_cnt in the source code) for the input feature file. All instances have exactly field_cnt fields.  Each field can be numerical type or categorical (one-hot) type.
+
+Notice:  (1). Input format is the same as svmlight, feature index starts with 1. 
+         (2). You have to provide the "field number" (a.k.a field_cnt in the source code) for the input feature file. All instances have exactly field_cnt fields.  Each field can be numerical type or categorical (one-hot) type.
 
 ### ccf_net
 http://dl.acm.org/citation.cfm?id=3054207  Part of the paper "CCCFNet: A Content-Boosted Collaborative Filtering Neural Network for Cross Domain Recommender Systems".  The original code was written in c#. We re-implement the model in tensorflow for unification. The demo data is from MovieLens.
