@@ -16,3 +16,6 @@ Notice:  (1) Input format is the same as svmlight, feature index starts with 1.
 
 ### CCFNet
 http://dl.acm.org/citation.cfm?id=3054207  Part of the paper "CCCFNet: A Content-Boosted Collaborative Filtering Neural Network for Cross Domain Recommender Systems".  The original code was written in c#. We re-implement the model in tensorflow for unification. The demo data is from MovieLens.
+
+### Biased Matrix Factorization
+BMF model in https://datajobs.com/data-science-repo/Recommender-Systems-%5BNetflix%5D.pdf . Demo data is Douban user-book sample dataset.
