@@ -6,10 +6,10 @@ Usage: Simply download the corresponding file, modify some lines according to yo
 
 ### DeepFM
 https://arxiv.org/abs/1703.04247 DeepFM: A Factorization-Machine based Neural Network for CTR Prediction. We implement the model according to the paper. Some results (AUC) on the demo dataset: 
-1. Linear only: 0.667 
-2. FM only: 0.684   
-3. DNN only: 0.670  
-4. DeepFM: 0.692 .
+⋅⋅* Linear only: 0.667 
+⋅⋅* FM only: 0.684   
+⋅⋅* DNN only: 0.670  
+⋅⋅* DeepFM: 0.692 .
 
 Notice:  (1) Input format is the same as svmlight, feature index starts with 1. 
          (2) You have to provide the "field number" (a.k.a field_cnt in the source code) for the input feature file. All instances have exactly field_cnt fields.  Each field can be numerical type or categorical (one-hot) type.
