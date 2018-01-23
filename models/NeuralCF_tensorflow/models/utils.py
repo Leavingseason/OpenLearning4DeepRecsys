@@ -13,13 +13,13 @@ def parse_args():
                         help='Number of epochs.')
     parser.add_argument('--batch_size', type=int, default=256,
                         help='Batch size.')
-    parser.add_argument('--num_factors', type=int, default=8,
+    parser.add_argument('--num_factors', type=int, default=32,
                         help='Embedding size.')
-    parser.add_argument('--reg_id_embedding', nargs='?', default=0.0,
+    parser.add_argument('--reg_id_embedding', nargs='?', default=0.0, type=int,
                         help="Regularization for user and item embeddings.")
-    parser.add_argument('--reg_others', nargs='?', default=0.0,
+    parser.add_argument('--reg_others', nargs='?', default=0.0,  type=float,
                         help="Regularization for general variables.")
-    parser.add_argument('--init_stddev', nargs='?', default=0.1,
+    parser.add_argument('--init_stddev', nargs='?', default=0.1,  type=float,
                         help="Init stddev value for variables.")
     parser.add_argument('--num_neg_inst', type=int, default=4,
                         help='Number of negative instances to pair with a positive instance.')
