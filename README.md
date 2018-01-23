@@ -1,6 +1,7 @@
 # OpenLearning4DeepRecsys
 We have implemented some popular and promising recommendation systems with deep learning techniques. We would like to open souce the code and hope it can help more people on the related topics, and at the same time improve our code quality.
 
+Environment: python 3.5, tensorflow 1.0.0
 
 Usage: Simply download the corresponding file, modify some lines according to your own configuration, then run "python xxxx.py". Currently we aim to provide the opportunity for communication in research area. Later we plan to build an integrated tool for off-the-shelf usage. So kindly let me know if you have any suggestions.
 
@@ -19,3 +20,6 @@ http://dl.acm.org/citation.cfm?id=3054207  Part of the paper "CCCFNet: A Content
 
 ### Biased Matrix Factorization
 BMF model in https://datajobs.com/data-science-repo/Recommender-Systems-%5BNetflix%5D.pdf . Demo data is Douban user-book sample dataset.
+
+### NeuCF
+Neural collaborative fitering from https://github.com/hexiangnan/neural_collaborative_filtering. Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu and Tat-Seng Chua (2017). Neural Collaborative Filtering. In Proceedings of WWW '17, Perth, Australia, April 03-07, 2017. The original source code is written in keras v1 and use Theano as the backend. We re-implement the model in tensorflow for unification. 
