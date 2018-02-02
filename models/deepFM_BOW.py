@@ -6,6 +6,8 @@ Created on May 14, 2017
 Upon the deepFM.py, in this file, we make the model support multiple sparse values within one field.
 The input format is : label field_idx:feature_idx:value ...  
 For all instances, number of field is fixed. However, different instances may have different number of active feautres under each field.
+
+Referring https://github.com/Leavingseason/OpenLearning4DeepRecsys/issues/10 
 '''
 
 import tensorflow as tf
