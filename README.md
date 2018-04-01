@@ -23,3 +23,8 @@ BMF model in https://datajobs.com/data-science-repo/Recommender-Systems-%5BNetfl
 
 ### NeuCF
 Neural collaborative fitering from https://github.com/hexiangnan/neural_collaborative_filtering. Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu and Tat-Seng Chua (2017). Neural Collaborative Filtering. In Proceedings of WWW '17, Perth, Australia, April 03-07, 2017. The original source code is written in keras v1 and use Theano as the backend. We re-implement the model in tensorflow for unification. 
+
+###RNN - embedding-based news recommender system
+Please see the repository here https://github.com/Leavingseason/rnn_recsys.
+
+Our implementation of one research paper "Embedding-based News Recommendation for Millions of Users" https://dl.acm.org/citation.cfm?id=3098108 Shumpei Okura, Yukihiro Tagami, Shingo Ono, and Akira Tajima. 2017. In Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD '17).
