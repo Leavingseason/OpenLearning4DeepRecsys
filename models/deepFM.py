@@ -128,8 +128,11 @@ def single_run(feature_cnt, field_cnt,  params):
 
     _y = tf.placeholder(tf.float32, shape=[None, 1], name='Y')
     _ind = tf.placeholder(tf.int64, shape=[None])
+    
 
-    train_step, loss, error, preds, merged_summary, tmp = build_model(_indices, _values, _values2, _shape, _y, _ind,
+    _keep_probs = tf.placeholder(tf.float32, shape=[len(params['keep_probs'])], name = 'dropout_keep_probability')
+    
+    train_step, loss, error, preds, merged_summary, tmp = build_model(_indices, _values, _values2, _shape, _y, _ind, _keep_probs,
                                                                  feature_cnt, field_cnt, params)
 
     # auc = tf.metrics.auc(_y, preds)
@@ -138,7 +141,7 @@ def single_run(feature_cnt, field_cnt,  params):
     saver = tf.train.Saver()
     sess = tf.Session()
     init = tf.global_variables_initializer()
-    sess.run(init)
+    sess.run(init) 
 
     log_writer = tf.summary.FileWriter(params['log_path'], graph=sess.graph)
 
@@ -163,7 +166,8 @@ def single_run(feature_cnt, field_cnt,  params):
             _,  cur_loss, summary, _tmp = sess.run([train_step,  loss, merged_summary, tmp], feed_dict={
                 _indices: training_input_in_sp['indices'], _values: training_input_in_sp['values'],
                 _shape: training_input_in_sp['shape'], _y: training_input_in_sp['labels'],
-                _values2: training_input_in_sp['values2'], _ind: training_input_in_sp['feature_indices']
+                _values2: training_input_in_sp['values2'], _ind: training_input_in_sp['feature_indices'],
+                _keep_probs: np.asarray(params['keep_probs'])
             })
 
             time_cp02 = clock()
@@ -183,7 +187,7 @@ def single_run(feature_cnt, field_cnt,  params):
             os.makedirs(model_path, exist_ok=True)
             saver.save(sess, model_path, global_step=eopch)            
             auc=predict_test_file(preds, sess, params['test_file'], feature_cnt, _indices, _values, _shape, _y,
-                              _values2, _ind, eopch, batch_size, 'test', model_path, params['output_predictions'])
+                              _values2, _ind, _keep_probs,  eopch, batch_size, 'test', model_path, params['output_predictions'], params)
             print('auc is ', auc, ', at epoch  ', eopch, ', time is {0:.4f} min'.format((end - start) / 60.0)
                   , ', train_loss is {0:.2f}'.format(train_loss_per_epoch))
             
@@ -191,8 +195,8 @@ def single_run(feature_cnt, field_cnt,  params):
     log_writer.close()
 
 
-def predict_test_file(preds, sess, test_file, feature_cnt, _indices, _values, _shape, _y, _values2, _ind, epoch,
-                      batch_size, tag, path, output_prediction = True):
+def predict_test_file(preds, sess, test_file, feature_cnt, _indices, _values, _shape, _y, _values2, _ind, _keep_probs,  epoch,
+                      batch_size, tag, path, output_prediction = True, params = None):
     if output_prediction:
         wt = open(path + '/deepFM_pred_' + tag + str(epoch) + '.txt', 'w')
 
@@ -203,7 +207,8 @@ def predict_test_file(preds, sess, test_file, feature_cnt, _indices, _values, _s
         predictios = sess.run(preds, feed_dict={
             _indices: test_input_in_sp['indices'], _values: test_input_in_sp['values'],
             _shape: test_input_in_sp['shape'], _y: test_input_in_sp['labels'], _values2: test_input_in_sp['values2'],
-            _ind: test_input_in_sp['feature_indices']
+            _ind: test_input_in_sp['feature_indices'],
+            _keep_probs: np.ones_like(params['keep_probs'])
         }).reshape(-1).tolist()
         
         if output_prediction:
@@ -223,7 +228,7 @@ def predict_test_file(preds, sess, test_file, feature_cnt, _indices, _values, _s
     return auc
 
 
-def build_model(_indices, _values, _values2, _shape, _y, _ind, feature_cnt, field_cnt, params):
+def build_model(_indices, _values, _values2, _shape, _y, _ind, keep_probs, feature_cnt, field_cnt, params):
     eta = tf.constant(params['eta'])
     _x = tf.SparseTensor(_indices, _values, _shape)  # m * feature_cnt sparse tensor
     _xx = tf.SparseTensor(_indices, _values2, _shape)
@@ -234,6 +239,7 @@ def build_model(_indices, _values, _values2, _shape, _y, _ind, feature_cnt, fiel
     init_value = params['init_value']
     dim = params['dim']
     layer_sizes = params['layer_sizes']
+     
 
     # w_linear = tf.Variable(tf.truncated_normal([feature_cnt, 1], stddev=init_value, mean=0), name='w_linear',
     #                        dtype=tf.float32)
@@ -284,6 +290,8 @@ def build_model(_indices, _values, _values2, _shape, _y, _ind, feature_cnt, fiel
             cur_b_nn_layer = tf.Variable(tf.truncated_normal([layer_size], stddev=init_value, mean=0), name='b_nn_layer' + str(layer_idx)) #tf.get_variable('b_nn_layer' + str(layer_idx), [layer_size], initializer=tf.constant_initializer(0.0)) 
 
             cur_hidden_nn_layer = tf.nn.xw_plus_b(hidden_nn_layers[layer_idx], cur_w_nn_layer, cur_b_nn_layer)
+            
+            cur_hidden_nn_layer = tf.nn.dropout(cur_hidden_nn_layer, keep_probs[layer_idx])
             
             if params['activations'][layer_idx]=='tanh':
                 cur_hidden_nn_layer = tf.nn.tanh(cur_hidden_nn_layer)
@@ -404,6 +412,7 @@ def run():
         'reg_w_l1': 0.0001,
         'init_value': 0.1,
         'layer_sizes': [10, 5],
+        'keep_probs':[0.7,0.7],  # dropout setting
         'activations':['tanh','tanh'],
         'eta': 0.1,
         'n_epoch': 5000,  # 500
@@ -414,7 +423,7 @@ def run():
         'train_file':  'data/S1_4.txt',  #'data/part01.svmlight_balanced.csv',
         'test_file':    'data/S5.txt',#'data/part02.svmlight.csv',
         'output_predictions':False,
-        'is_use_fm_part':False,
+        'is_use_fm_part':True,
         'is_use_dnn_part':True,
         'learning_rate':0.01, # [0.001, 0.01]
         'loss': 'log_loss', # [cross_entropy_loss, square_loss, log_loss]
